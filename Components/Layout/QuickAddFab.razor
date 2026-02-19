@@ -1,0 +1,247 @@
+@implements IDisposable
+@inject ChoresState ChoresState
+@inject ExpensesState ExpensesState
+@inject HouseholdState HouseholdState
+
+<AuthorizeView>
+    <Authorized>
+        @if (HouseholdState.HasHousehold)
+        {
+            <nav class="quick-add" aria-label="Quick add shortcuts">
+                <button type="button"
+                        class="quick-add__button @GetButtonClass(ComposerType.Chore)"
+                        aria-haspopup="dialog"
+                        aria-expanded="@(_isModalOpen && _activeComposer is ComposerType.Chore)"
+                        aria-controls="quick-add-modal"
+                        @onclick="() => OpenModal(ComposerType.Chore)">
+                    + Chore
+                </button>
+                <button type="button"
+                        class="quick-add__button @GetButtonClass(ComposerType.Expense)"
+                        aria-haspopup="dialog"
+                        aria-expanded="@(_isModalOpen && _activeComposer is ComposerType.Expense)"
+                        aria-controls="quick-add-modal"
+                        @onclick="() => OpenModal(ComposerType.Expense)">
+                    + Expense
+                </button>
+            </nav>
+
+            <div class="quick-add-modal-shell @(_isModalOpen ? "quick-add-modal-shell--open" : null)"
+                 @onclick="CloseModal"
+                 hidden="@(!_isModalOpen)">
+                <section id="quick-add-modal"
+                         class="quick-add-modal @(_isModalOpen ? "quick-add-modal--open" : null) @GetModalThemeClass()"
+                         @onclick:stopPropagation="true"
+                         @onkeydown="HandleModalKeyDown"
+                         role="dialog"
+                         aria-modal="true"
+                         aria-labelledby="quick-add-modal-title"
+                         aria-busy="@_isSubmitting"
+                         tabindex="-1"
+                         @ref="_modalElement">
+                    @if (_isModalOpen)
+                    {
+                        <header class="quick-add-modal__header">
+                            <div>
+                                <h2 id="quick-add-modal-title">@GetModalTitle()</h2>
+                                <p>@GetModalSubtitle()</p>
+                            </div>
+                            <button type="button"
+                                    class="quick-add-modal__close"
+                                    @onclick="CloseModal"
+                                    aria-label="Close add dialog">
+                                Close
+                            </button>
+                        </header>
+
+                        <div class="quick-add-modal__body">
+                            @if (_activeComposer is ComposerType.Chore)
+                            {
+                                <ChoreComposer OnSubmit="HandleAddChoreAsync" />
+                            }
+                            else
+                            {
+                                <ExpenseComposer OnSubmit="HandleAddExpenseAsync" />
+                            }
+                        </div>
+
+                        @if (_isSubmitting)
+                        {
+                            <p class="quick-add-modal__status" role="status" aria-live="polite">Saving...</p>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(_error))
+                        {
+                            <p class="quick-add-modal__error" role="alert" aria-live="assertive">@_error</p>
+                        }
+                    }
+                </section>
+            </div>
+        }
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private bool _isModalOpen;
+    private bool _isSubmitting;
+    private bool _pendingModalFocus;
+    private string? _error;
+    private ElementReference _modalElement;
+    private ComposerType _activeComposer = ComposerType.Chore;
+
+    protected override void OnInitialized()
+    {
+        HouseholdState.Changed += HandleStateChanged;
+    }
+
+    private enum ComposerType
+    {
+        Chore,
+        Expense
+    }
+
+    private string GetButtonClass(ComposerType composerType)
+    {
+        if (!_isModalOpen || _activeComposer != composerType)
+        {
+            return string.Empty;
+        }
+
+        return "quick-add__button--active";
+    }
+
+    private string GetModalThemeClass()
+    {
+        return _activeComposer is ComposerType.Chore
+            ? "quick-add-modal--chore"
+            : "quick-add-modal--expense";
+    }
+
+    private string GetModalTitle()
+    {
+        return _activeComposer is ComposerType.Chore
+            ? "Add a chore"
+            : "Log an expense";
+    }
+
+    private string GetModalSubtitle()
+    {
+        return _activeComposer is ComposerType.Chore
+            ? "Keep your household tasks organized in seconds."
+            : "Capture spending details without leaving your screen.";
+    }
+
+    private void OpenModal(ComposerType composerType)
+    {
+        if (_isSubmitting)
+        {
+            return;
+        }
+
+        if (_isModalOpen && _activeComposer == composerType)
+        {
+            CloseModal();
+            return;
+        }
+
+        _activeComposer = composerType;
+        _error = null;
+        _isModalOpen = true;
+        _pendingModalFocus = true;
+    }
+
+    private void CloseModal()
+    {
+        if (_isSubmitting)
+        {
+            return;
+        }
+
+        _error = null;
+        _isModalOpen = false;
+        _pendingModalFocus = false;
+    }
+
+    private void HandleModalKeyDown(KeyboardEventArgs args)
+    {
+        if (args.Key == "Escape")
+        {
+            CloseModal();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (_pendingModalFocus && _isModalOpen)
+        {
+            _pendingModalFocus = false;
+            await _modalElement.FocusAsync();
+        }
+    }
+
+    private async Task HandleAddChoreAsync(CreateChoreRequest request)
+    {
+        if (_isSubmitting)
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+        _error = null;
+
+        try
+        {
+            await ChoresState.AddAsync(request);
+
+            if (string.IsNullOrWhiteSpace(ChoresState.Error))
+            {
+                _isModalOpen = false;
+                return;
+            }
+
+            _error = ChoresState.Error;
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private async Task HandleAddExpenseAsync(CreateExpenseRequest request)
+    {
+        if (_isSubmitting)
+        {
+            return;
+        }
+
+        _isSubmitting = true;
+        _error = null;
+
+        try
+        {
+            await ExpensesState.AddAsync(request);
+
+            if (string.IsNullOrWhiteSpace(ExpensesState.Error))
+            {
+                _isModalOpen = false;
+                return;
+            }
+
+            _error = ExpensesState.Error;
+        }
+        finally
+        {
+            _isSubmitting = false;
+        }
+    }
+
+    private void HandleStateChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        HouseholdState.Changed -= HandleStateChanged;
+    }
+}

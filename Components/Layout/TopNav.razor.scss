@@ -1,0 +1,184 @@
+@use "variables" as v;
+
+.top-nav {
+  position: sticky;
+  top: v.$s;
+  z-index: 40;
+  width: min(72rem, 100%);
+  margin: 0 auto;
+  border: 1px solid rgba(v.$text-color, 0.18);
+  border-radius: 1rem;
+  background:
+    linear-gradient(135deg, rgb(23 33 44 / 82%) 0%, rgb(28 45 60 / 88%) 100%),
+    v.$accent-color;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0.8rem 2rem rgb(0 0 0 / 30%);
+  padding: v.$xs;
+
+  &__inner {
+    width: 100%;
+    margin: 0;
+    padding: v.$xs;
+    display: grid;
+    gap: v.$xs;
+
+    &--open {
+      .top-nav__menu-icon {
+        span {
+          &:nth-child(1) {
+            transform: translateY(0.31rem) rotate(45deg);
+          }
+
+          &:nth-child(2) {
+            opacity: 0;
+          }
+
+          &:nth-child(3) {
+            transform: translateY(-0.31rem) rotate(-45deg);
+          }
+        }
+      }
+
+      .top-nav__menu {
+        max-height: 26rem;
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+
+  &__menu-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    width: fit-content;
+    border: 1px solid v.$border-white;
+    border-radius: 999px;
+    padding: v.$xs v.$m;
+    color: v.$text-color;
+    font-weight: 600;
+    line-height: 1.1;
+    background: v.$surface-white-mid;
+    cursor: pointer;
+    transition: v.$transition;
+
+    &:hover {
+      border-color: v.$border-white-hover-soft;
+      background: v.$surface-white-hover;
+    }
+
+    &:focus-visible {
+      outline: v.$focus-outline-width solid v.$focus-ring-success;
+      outline-offset: v.$focus-outline-offset;
+    }
+  }
+
+  &__menu-icon {
+    width: 0.95rem;
+    display: grid;
+    gap: 0.16rem;
+
+    span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transition: transform 0.24s ease, opacity 0.2s ease;
+    }
+  }
+
+  &__menu {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: v.$xs;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+  }
+
+  &__menu ::deep(.nav-button),
+  &__action {
+    width: 100%;
+    justify-content: center;
+  }
+
+  &__action-form {
+    margin: 0;
+    width: 100%;
+  }
+
+  &__action {
+    border: 1px solid v.$border-white;
+    border-radius: 999px;
+    padding: v.$xs v.$m;
+    color: v.$text-color;
+    font-weight: 600;
+    line-height: 1.1;
+    background: v.$surface-white-soft;
+    cursor: pointer;
+    transition: v.$transition;
+
+    &:hover {
+      border-color: v.$border-white-hover-strong;
+      background: v.$surface-white-hover;
+    }
+
+    &:focus-visible {
+      outline: v.$focus-outline-width solid v.$focus-ring-success;
+      outline-offset: v.$focus-outline-offset;
+    }
+  }
+}
+
+@media (min-width: v.$breakpoint-s) {
+  .top-nav {
+    top: v.$m;
+    border-radius: 1.1rem;
+
+    &__inner {
+      padding: v.$s;
+      gap: v.$s;
+    }
+  }
+}
+
+@media (min-width: v.$breakpoint-m) {
+  .top-nav {
+    &__inner {
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+    }
+
+    &__menu-toggle {
+      display: none;
+    }
+
+    &__menu {
+      max-height: none;
+      opacity: 1;
+      overflow: visible;
+      pointer-events: auto;
+      flex-direction: row;
+      align-items: center;
+      gap: v.$s;
+    }
+
+    &__menu ::deep(.nav-button),
+    &__action {
+      width: auto;
+      justify-content: center;
+    }
+
+    &__action-form {
+      margin: 0 0 0 auto;
+      width: auto;
+    }
+  }
+}

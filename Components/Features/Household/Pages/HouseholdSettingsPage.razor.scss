@@ -1,0 +1,185 @@
+@use "variables" as v;
+
+.settings-page {
+  display: grid;
+  gap: 1.25rem;
+  width: min(52rem, 100%);
+
+  > header {
+    display: grid;
+    gap: 0.35rem;
+
+    h1 {
+      margin: 0;
+      color: v.$text-color;
+      line-height: 1.1;
+      font-size: clamp(1.9rem, 3.2vw, 2.4rem);
+      text-shadow: 0 0.35rem 1rem rgb(0 0 0 / 24%);
+    }
+
+    p {
+      margin: 0;
+      max-width: 62ch;
+      color: v.$text-muted-soft;
+    }
+  }
+}
+
+.settings-card {
+  border: 1px solid v.$border-panel;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: v.$surface-panel;
+  box-shadow: v.$shadow-panel-inset;
+
+  h2 {
+    margin: 0;
+    color: v.$text-color;
+  }
+
+  p {
+    margin: 0.45rem 0 0;
+    color: v.$text-muted-soft;
+  }
+}
+
+.settings-link {
+  display: inline-flex;
+  margin-top: 0.85rem;
+  border: 1px solid v.$button-primary-border;
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.85rem;
+  color: v.$button-primary-text;
+  text-decoration: none;
+  font-weight: 600;
+  background: v.$button-primary-gradient;
+  box-shadow: v.$shadow-button-primary;
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: v.$shadow-button-primary-hover;
+  }
+
+  &:focus-visible {
+    outline: v.$focus-outline-width solid v.$focus-ring;
+    outline-offset: v.$focus-outline-offset;
+  }
+}
+
+.settings-danger-button {
+  margin-top: 0.25rem;
+  border: 1px solid v.$state-danger-border-strong;
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.85rem;
+  min-height: 2.4rem;
+  color: v.$state-danger-text;
+  font-weight: 700;
+  background: v.$state-danger-bg-strong;
+  transition: transform 0.18s ease, filter 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+  }
+
+  &:focus-visible {
+    outline: v.$focus-outline-width solid v.$focus-ring;
+    outline-offset: v.$focus-outline-offset;
+  }
+
+  &:disabled {
+    opacity: 0.68;
+    cursor: not-allowed;
+    transform: none;
+    filter: none;
+  }
+}
+
+.settings-card__section-title {
+  margin: 1rem 0 0;
+  color: v.$text-color;
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+}
+
+.settings-card__inline-status {
+  margin-top: 0.55rem;
+}
+
+.settings-lock-tag {
+  display: inline-flex;
+  margin-left: 0.35rem;
+  border-radius: 999px;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: v.$text-color;
+  border: 1px solid v.$border-action;
+  background: v.$button-surface;
+}
+
+.settings-toggle-button {
+  margin-top: 0.55rem;
+  border: 1px solid v.$button-primary-border;
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.85rem;
+  min-height: 2.4rem;
+  color: v.$button-primary-text;
+  font-weight: 700;
+  background: v.$button-primary-gradient;
+  box-shadow: v.$shadow-button-primary;
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: v.$shadow-button-primary-hover;
+  }
+
+  &:focus-visible {
+    outline: v.$focus-outline-width solid v.$focus-ring;
+    outline-offset: v.$focus-outline-offset;
+  }
+
+  &:disabled {
+    opacity: 0.68;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.member-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.45rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    color: rgba(v.$text-color, 0.93);
+  }
+}
+
+.current-user-tag,
+.member-tag {
+  border-radius: 999px;
+  font-size: 0.75rem;
+  padding: 0.16rem 0.5rem;
+  color: v.$text-color;
+  font-weight: 600;
+}
+
+.current-user-tag {
+  background: rgb(71 118 169 / 34%);
+  border: 1px solid rgb(113 157 204 / 42%);
+}
+
+.member-tag {
+  background: rgb(68 129 84 / 34%);
+  border: 1px solid rgb(103 169 120 / 42%);
+}

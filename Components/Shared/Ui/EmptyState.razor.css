@@ -1,0 +1,17 @@
+.empty-state {
+    border: 1px dashed rgba(166, 196, 214, 0.32);
+    border-radius: 1rem;
+    padding: 1rem;
+    background: rgba(13, 20, 29, 0.58);
+}
+
+.empty-state h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: #f4f8fc;
+}
+
+.empty-state p {
+    margin: 0.35rem 0 0;
+    color: rgba(228, 239, 247, 0.84);
+}

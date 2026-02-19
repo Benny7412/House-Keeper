@@ -1,0 +1,37 @@
+<EditForm Model="_request" OnValidSubmit="SubmitAsync" FormName="@_formName" class="composer">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="composer__row">
+        <label class="visually-hidden" for="@_titleInputId">Chore title</label>
+        <InputText id="@_titleInputId" class="composer__input" @bind-Value="_request.Title" placeholder="Add a chore" />
+        <button class="composer__submit" type="submit">Add</button>
+    </div>
+
+    <div class="composer__row">
+        <label class="composer__choice" for="@_urgentCheckboxId">
+            <InputCheckbox id="@_urgentCheckboxId" class="composer__checkbox" @bind-Value="_request.IsUrgent" />
+            Urgent
+        </label>
+        <label class="composer__field" for="@_dueDateInputId">
+            Due
+            <InputDate id="@_dueDateInputId" class="composer__input composer__date" @bind-Value="_request.DueDate" />
+        </label>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public EventCallback<CreateChoreRequest> OnSubmit { get; set; }
+
+    private readonly string _formName = $"chore-composer-{Guid.NewGuid():N}";
+    private readonly string _titleInputId = $"chore-title-{Guid.NewGuid():N}";
+    private readonly string _urgentCheckboxId = $"chore-urgent-{Guid.NewGuid():N}";
+    private readonly string _dueDateInputId = $"chore-due-date-{Guid.NewGuid():N}";
+    private CreateChoreRequest _request = new();
+
+    private async Task SubmitAsync()
+    {
+        await OnSubmit.InvokeAsync(_request);
+        _request = new CreateChoreRequest();
+    }
+}

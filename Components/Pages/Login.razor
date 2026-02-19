@@ -1,0 +1,47 @@
+@page "/account/login"
+@attribute [AllowAnonymous]
+@using HouseKeeper.Components.Routing
+
+<PageTitle>Log In</PageTitle>
+
+<section class="account-page">
+    <header>
+        <h1>Log in</h1>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(Error))
+    {
+        <p class="account-page__error" role="alert" aria-live="assertive">@Error</p>
+    }
+
+    <form method="post" action="@AppRoutes.Login" class="account-form">
+        <AntiforgeryToken />
+        <input type="hidden" name="returnUrl" value="@NormalizedReturnUrl" />
+
+        <label>
+            Username
+            <input type="text" name="Username" maxlength="32" minlength="3" required autocomplete="username" />
+        </label>
+
+        <label>
+            Password
+            <input type="password" name="Password" minlength="8" maxlength="120" required autocomplete="current-password" />
+        </label>
+
+        <button type="submit">Log in</button>
+    </form>
+
+    <p>
+        Need an account?
+        <a href="@($"{AppRoutes.Register}?returnUrl={Uri.EscapeDataString(NormalizedReturnUrl)}")">Register</a>
+    </p>
+</section>
+
+@code {
+    [SupplyParameterFromQuery(Name = "error")] public string? Error { get; set; }
+    [SupplyParameterFromQuery(Name = "returnUrl")] public string? ReturnUrl { get; set; }
+
+    private string NormalizedReturnUrl => !string.IsNullOrWhiteSpace(ReturnUrl) && ReturnUrl.StartsWith('/')
+        ? ReturnUrl
+        : AppRoutes.Home;
+}

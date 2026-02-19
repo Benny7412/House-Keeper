@@ -1,0 +1,162 @@
+// Global palette
+$background: #50545a;
+$foreground: #2c2e32;
+$accent-color: #2c3e50;
+$text-color: #ffffff;
+
+// Typography
+$header-big-font: "Epunda Slab", serif;
+$header-small-font: "Poppins", sans-serif;
+$body-font: "Playfair Display", Arial, Helvetica, sans-serif;
+
+// Spacing and motion
+$angle: 45deg;
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+$xxs: 0.236em;
+$xs: 0.382em;
+$s: 0.618em;
+$m: 1em;
+$l: 1.618em;
+$xl: 2.618em;
+$xxl: 4.236em;
+
+// Breakpoints
+$breakpoint-s: 576px;
+$breakpoint-m: 768px;
+$breakpoint-l: 1080px;
+
+// Text tokens
+$text-muted: rgba($text-color, 0.86);
+$text-muted-soft: rgba($text-color, 0.84);
+$text-muted-subtle: rgba($text-color, 0.78);
+$text-muted-faint: rgba($text-color, 0.7);
+
+// Shared surface tokens
+$surface-panel: linear-gradient(
+  160deg,
+  rgb(13 19 27 / 66%) 0%,
+  rgb(17 28 39 / 76%) 100%
+);
+$surface-panel-strong: linear-gradient(
+  165deg,
+  rgb(13 20 29 / 78%) 0%,
+  rgb(20 31 43 / 72%) 100%
+);
+$surface-input: rgb(8 14 21 / 62%);
+$surface-input-strong: rgb(9 16 24 / 68%);
+$surface-input-focus: rgb(10 18 26 / 75%);
+$surface-overlay: rgb(6 10 15 / 44%);
+$surface-white-soft: rgb(255 255 255 / 8%);
+$surface-white: rgb(255 255 255 / 9%);
+$surface-white-mid: rgb(255 255 255 / 10%);
+$surface-white-strong: rgb(255 255 255 / 16%);
+$surface-white-hover: rgb(255 255 255 / 20%);
+$surface-status: rgb(14 22 31 / 52%);
+$surface-status-loading: rgb(18 38 57 / 46%);
+$surface-status-error: rgb(120 25 25 / 24%);
+$surface-tag-urgent: rgb(232 110 86 / 24%);
+$surface-account-card: rgb(12 20 30 / 60%);
+
+// Shared border tokens
+$border-panel: rgb(166 196 214 / 20%);
+$border-panel-strong: rgb(166 196 214 / 22%);
+$border-panel-soft: rgb(166 196 214 / 26%);
+$border-input: rgb(166 196 214 / 30%);
+$border-input-strong: rgb(166 196 214 / 32%);
+$border-white-soft: rgb(255 255 255 / 16%);
+$border-white: rgb(255 255 255 / 20%);
+$border-white-strong: rgb(255 255 255 / 26%);
+$border-white-hover: rgb(255 255 255 / 30%);
+$border-white-hover-soft: rgb(255 255 255 / 32%);
+$border-white-hover-strong: rgb(255 255 255 / 34%);
+$border-action: rgb(159 186 204 / 30%);
+$border-action-hover: rgb(184 208 223 / 48%);
+$border-success: rgb(112 172 131 / 32%);
+$border-status-loading: rgb(149 193 231 / 30%);
+$border-error: rgb(245 132 132 / 38%);
+$border-error-soft: rgb(255 163 163 / 34%);
+$border-tag-urgent: rgb(243 138 116 / 28%);
+$border-account-card: rgb(166 196 214 / 24%);
+
+// Shared shadow tokens
+$shadow-panel-inset: inset 0 1px 0 rgb(255 255 255 / 6%);
+$shadow-panel-soft: 0 0.9rem 1.8rem rgb(0 0 0 / 20%);
+$shadow-panel-strong: inset 0 1px 0 rgb(255 255 255 / 8%),
+  0 0.9rem 1.8rem rgb(0 0 0 / 20%);
+$shadow-account-card: 0 1rem 2rem rgb(0 0 0 / 28%);
+$shadow-button-primary: 0 0.5rem 1rem rgb(14 35 53 / 32%);
+$shadow-button-primary-hover: 0 0.75rem 1.25rem rgb(14 35 53 / 36%);
+
+// Shared focus tokens
+$focus-outline-width: 3px;
+$focus-outline-offset: 2px;
+$focus-ring: rgb(132 198 235 / 45%);
+$focus-ring-soft: rgb(102 168 208 / 24%);
+$focus-ring-success: rgb(106 196 111 / 42%);
+$focus-ring-success-strong: rgb(136 212 159 / 55%);
+$focus-ring-light: rgb(255 255 255 / 72%);
+$focus-input-border: rgb(132 198 235 / 86%);
+
+// Shared action/button tokens
+$button-primary-text: $text-color;
+$button-primary-border: rgb(129 188 224 / 48%);
+$button-primary-gradient: linear-gradient(135deg, #3b7ea6 0%, #5a9bc1 100%);
+$button-surface: rgb(232 243 250 / 12%);
+$button-surface-hover: rgb(232 243 250 / 20%);
+
+// Shared state tokens
+$state-success-bg: linear-gradient(
+  160deg,
+  rgb(15 30 22 / 62%) 0%,
+  rgb(18 35 27 / 75%) 100%
+);
+$state-danger-text: #ffd7d7;
+$state-danger-text-soft: #ffd6d6;
+$state-urgent-text: #ffd8d2;
+$state-danger-bg-strong: rgb(94 28 28 / 38%);
+$state-danger-bg: rgb(132 0 0 / 38%);
+$state-danger-border-strong: rgb(255 155 155 / 45%);
+
+// Brown gradient
+$artisan-brown-flat: rgb(60% 36.5% 15.3%);
+$artisan-brown-hover: rgba(153, 92, 39, 0.5);
+$artisan-brown: linear-gradient(
+  $angle,
+  rgb(45.9% 26.7% 7.84%),
+  rgb(60% 36.5% 15.3%),
+  rgb(63.9% 44.7% 21.2%),
+  rgb(69% 52.5% 29.8%)
+);
+
+// Green gradient
+$artisan-green-flat: rgb(34% 50% 34%);
+$artisan-green-hover: rgb(25% 42% 25%);
+$artisan-green: linear-gradient(
+  $angle,
+  rgb(18% 30% 16%),
+  rgb(25% 42% 25%),
+  rgb(34% 50% 34%),
+  rgb(42% 60% 42%)
+);
+
+// Rust gradient
+$artisan-rust-flat: rgb(62% 32% 22%);
+$artisan-rust-hover: rgb(55% 25% 15%);
+$artisan-rust: linear-gradient(
+  $angle,
+  rgb(45% 18% 10%),
+  rgb(55% 25% 15%),
+  rgb(62% 32% 22%),
+  rgb(70% 40% 28%)
+);
+
+// Sand gradient
+$artisan-sand-flat: rgb(72% 64% 50%);
+$artisan-sand-hover: rgb(58% 47% 32%);
+$artisan-sand: linear-gradient(
+  $angle,
+  rgb(80% 72% 58%),
+  rgb(72% 64% 50%),
+  rgb(65% 55% 40%),
+  rgb(58% 47% 32%)
+);

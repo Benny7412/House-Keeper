@@ -1,0 +1,145 @@
+@implements IDisposable
+@inject HouseholdState State
+
+<section class="settings-page">
+    <header>
+        <h1>Household settings</h1>
+        <p>Manage members and invite users.</p>
+    </header>
+
+    @if (State.IsLoading)
+    {
+        <p class="status-message status-message--loading" role="status" aria-live="polite">Loading household...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(State.Error))
+    {
+        <p class="status-message status-message--error" role="alert">@State.Error</p>
+    }
+    else if (!State.HasHousehold)
+    {
+        <section class="settings-card">
+            <h2>No household yet</h2>
+            <p>Go to Home to check invites or create a household.</p>
+            <a class="settings-link" href="@AppRoutes.Home">Open Home</a>
+        </section>
+    }
+    else
+    {
+        @if (State.IsCurrentUserAdmin)
+        {
+            <InviteMemberModal OnInvite="HandleInviteAsync" />
+        }
+        else
+        {
+            <p class="status-message">Only admins can invite members.</p>
+            <button type="button"
+                    class="settings-danger-button"
+                    disabled="@_isLeaving"
+                    @onclick="LeaveHouseholdAsync">
+                Leave household
+            </button>
+        }
+
+        <section class="settings-card">
+            <h2>@State.HouseholdName</h2>
+            <p>Role: @(State.IsCurrentUserAdmin ? "Admin" : "Member")</p>
+
+            <h3 class="settings-card__section-title">Chore lock</h3>
+            <p class="settings-card__inline-status">
+                Status:
+                <span class="settings-lock-tag">
+                    @(State.IsChoreMutationsLocked ? "Enabled (admins only)" : "Disabled (everyone can edit)")
+                </span>
+            </p>
+            @if (State.IsCurrentUserAdmin)
+            {
+                <button type="button"
+                        class="settings-toggle-button"
+                        disabled="@_isUpdatingChoreLock"
+                        @onclick="ToggleChoreLockAsync">
+                    @(State.IsChoreMutationsLocked ? "Disable chore lock" : "Enable chore lock")
+                </button>
+            }
+
+            <h3 class="settings-card__section-title">Members</h3>
+            <ul class="member-list">
+                @foreach (var member in State.Members)
+                {
+                    <li>
+                        <span>@member.DisplayName</span>
+                        @if (member.IsCurrentUser)
+                        {
+                            <span class="current-user-tag">Me</span>
+                        }
+                        @if (member.IsAdmin)
+                        {
+                            <span class="member-tag">Admin</span>
+                        }
+                    </li>
+                }
+            </ul>
+        </section>
+    }
+</section>
+
+@code {
+    private bool _isLeaving;
+    private bool _isUpdatingChoreLock;
+
+    protected override async Task OnInitializedAsync()
+    {
+        State.Changed += HandleStateChanged;
+        await State.LoadAsync();
+    }
+
+    private async Task HandleInviteAsync(InviteMemberRequest request)
+    {
+        await State.InviteMemberAsync(request);
+    }
+
+    private async Task LeaveHouseholdAsync()
+    {
+        if (_isLeaving)
+        {
+            return;
+        }
+
+        _isLeaving = true;
+        try
+        {
+            await State.LeaveHouseholdAsync();
+        }
+        finally
+        {
+            _isLeaving = false;
+        }
+    }
+
+    private async Task ToggleChoreLockAsync()
+    {
+        if (_isUpdatingChoreLock)
+        {
+            return;
+        }
+
+        _isUpdatingChoreLock = true;
+        try
+        {
+            await State.SetChoreLockAsync(!State.IsChoreMutationsLocked);
+        }
+        finally
+        {
+            _isUpdatingChoreLock = false;
+        }
+    }
+
+    private void HandleStateChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        State.Changed -= HandleStateChanged;
+    }
+}

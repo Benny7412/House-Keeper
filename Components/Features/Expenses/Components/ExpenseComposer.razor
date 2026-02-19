@@ -1,0 +1,38 @@
+<EditForm Model="_request" OnValidSubmit="SubmitAsync" FormName="@_formName" class="composer">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="composer__row">
+        <label class="visually-hidden" for="@_titleInputId">Expense title</label>
+        <InputText id="@_titleInputId" class="composer__input" @bind-Value="_request.Title" placeholder="Add an expense" />
+        <label class="visually-hidden" for="@_amountInputId">Amount</label>
+        <InputNumber id="@_amountInputId" class="composer__input composer__amount" @bind-Value="_request.Amount" placeholder="0.00" />
+        <label class="visually-hidden" for="@_currencyInputId">Currency</label>
+        <InputText id="@_currencyInputId" class="composer__input composer__currency" @bind-Value="_request.Currency" placeholder="USD" />
+        <button class="composer__submit" type="submit">Add</button>
+    </div>
+
+    <div class="composer__row">
+        <label class="composer__choice" for="@_urgentCheckboxId">
+            <InputCheckbox id="@_urgentCheckboxId" class="composer__checkbox" @bind-Value="_request.IsUrgent" />
+            Urgent
+        </label>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public EventCallback<CreateExpenseRequest> OnSubmit { get; set; }
+
+    private readonly string _formName = $"expense-composer-{Guid.NewGuid():N}";
+    private readonly string _titleInputId = $"expense-title-{Guid.NewGuid():N}";
+    private readonly string _amountInputId = $"expense-amount-{Guid.NewGuid():N}";
+    private readonly string _currencyInputId = $"expense-currency-{Guid.NewGuid():N}";
+    private readonly string _urgentCheckboxId = $"expense-urgent-{Guid.NewGuid():N}";
+    private CreateExpenseRequest _request = new();
+
+    private async Task SubmitAsync()
+    {
+        await OnSubmit.InvokeAsync(_request);
+        _request = new CreateExpenseRequest();
+    }
+}

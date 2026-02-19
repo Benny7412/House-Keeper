@@ -1,0 +1,26 @@
+<CascadingAuthenticationState>
+    <Router AppAssembly="typeof(Program).Assembly" NotFoundPage="typeof(Pages.NotFound)">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="routeData" DefaultLayout="typeof(Layout.MainLayout)">
+                <NotAuthorized>
+                    <LayoutView Layout="typeof(Layout.MainLayout)">
+                        <section class="not-authorized">
+                            <h1>Sign in required</h1>
+                            <p>
+                                Please <a href="@($"{AppRoutes.Login}?returnUrl={Uri.EscapeDataString(CurrentPath)}")">log in</a>
+                                to continue.
+                            </p>
+                        </section>
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    private string CurrentPath => "/" + Navigation.ToBaseRelativePath(Navigation.Uri);
+}

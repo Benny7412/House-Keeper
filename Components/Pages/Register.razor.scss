@@ -1,0 +1,78 @@
+@use "variables" as v;
+
+.account-page {
+  max-width: 420px;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  border-radius: 16px;
+  background: v.$surface-account-card;
+  border: 1px solid v.$border-account-card;
+  box-shadow: v.$shadow-account-card;
+
+  h1 {
+    color: v.$text-color;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    color: v.$text-color;
+    margin-bottom: 1rem;
+  }
+}
+
+.account-page__error {
+  color: v.$state-danger-text;
+  background: v.$state-danger-bg;
+  border: 1px solid v.$state-danger-border-strong;
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+}
+
+.account-form {
+  display: grid;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+
+  label {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    color: v.$text-color;
+  }
+
+  input {
+    border-radius: 10px;
+    border: 1px solid v.$border-input;
+    background: v.$surface-input-strong;
+    color: v.$text-color;
+    padding: 0.55rem 0.7rem;
+    min-height: 2.5rem;
+
+    &:focus-visible {
+      outline: none;
+      border-color: v.$focus-input-border;
+      box-shadow: 0 0 0 3px v.$focus-ring-soft;
+    }
+  }
+
+  button {
+    border: 1px solid v.$button-primary-border;
+    border-radius: 10px;
+    padding: 0.65rem 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: v.$button-primary-text;
+    background: v.$button-primary-gradient;
+    transition: transform 0.18s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: v.$shadow-button-primary-hover;
+    }
+
+    &:focus-visible {
+      outline: v.$focus-outline-width solid v.$focus-ring;
+      outline-offset: v.$focus-outline-offset;
+    }
+  }
+}

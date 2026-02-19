@@ -1,0 +1,104 @@
+@use "variables" as v;
+
+.invite-form {
+  border: 1px solid v.$border-panel-strong;
+  border-radius: 1rem;
+  padding: 1rem;
+  background: v.$surface-panel-strong;
+  box-shadow: v.$shadow-panel-strong;
+  backdrop-filter: blur(8px);
+
+  &__row {
+    display: flex;
+    gap: 0.7rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  &__input {
+    flex: 1;
+    min-width: 11.5rem;
+    border: 1px solid v.$border-input-strong;
+    border-radius: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    min-height: 2.55rem;
+    color: v.$text-color;
+    background: v.$surface-input;
+    transition:
+      border-color 0.2s ease,
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
+
+    &::placeholder {
+      color: v.$text-muted-faint;
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: v.$focus-input-border;
+      box-shadow: 0 0 0 3px v.$focus-ring-soft;
+      background: v.$surface-input-focus;
+    }
+  }
+
+  &__submit {
+    border: 1px solid v.$button-primary-border;
+    border-radius: 0.75rem;
+    padding: 0.55rem 1rem;
+    min-height: 2.55rem;
+    color: v.$button-primary-text;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    background: v.$button-primary-gradient;
+    box-shadow: v.$shadow-button-primary;
+    cursor: pointer;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.2s ease,
+      filter 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      box-shadow: v.$shadow-button-primary-hover;
+      filter: brightness(1.03);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus-visible {
+      outline: v.$focus-outline-width solid v.$focus-ring;
+      outline-offset: v.$focus-outline-offset;
+    }
+  }
+
+  ::deep(.validation-summary-valid) {
+    display: none;
+  }
+
+  ::deep(.validation-summary-errors) {
+    margin: 0 0 0.15rem;
+    padding: 0.55rem 0.7rem;
+    border: 1px solid v.$border-error;
+    border-radius: 0.65rem;
+    background: v.$surface-status-error;
+    color: v.$state-danger-text;
+    font-size: 0.9rem;
+
+    ul {
+      margin: 0;
+      padding-left: 1rem;
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .invite-form {
+    padding: 0.9rem;
+
+    &__submit {
+      width: 100%;
+    }
+  }
+}

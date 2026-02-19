@@ -1,0 +1,9 @@
+node_modules
+appsettings.Development.json
+artifacts/
+bin/
+obj/
+*.user
+*.db
+reqs.txt
+manifest.md

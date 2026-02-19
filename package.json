@@ -1,0 +1,16 @@
+{
+  "name": "housekeeper",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "sass:build": "sass --load-path=wwwroot/scss --no-source-map --style=compressed wwwroot/scss/app.scss:wwwroot/app.css Components:Components",
+    "sass:watch": "sass --watch --load-path=wwwroot/scss --no-source-map wwwroot/scss/app.scss:wwwroot/app.css Components:Components"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "sass": "^1.97.3"
+  }
+}

@@ -1,0 +1,41 @@
+@use "variables" as v;
+
+.nav-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-wrap: nowrap;
+  border-radius: 999px;
+  padding: v.$xs v.$m;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  color: rgba(v.$text-color, 0.92);
+  background: v.$surface-white;
+  border: 1px solid v.$border-white-soft;
+  transition: v.$transition;
+
+  &:hover {
+    color: v.$text-color;
+    border-color: v.$border-white-hover;
+    background: v.$surface-white-hover;
+  }
+
+  &.active {
+    color: #172330;
+    border-color: transparent;
+    background: linear-gradient(135deg, rgb(210 226 236 / 96%) 0%, rgb(177 208 221 / 98%) 100%);
+    box-shadow: 0 0.55rem 1.05rem rgb(0 0 0 / 18%);
+  }
+
+  &:focus-visible {
+    outline: v.$focus-outline-width solid v.$focus-ring-success;
+    outline-offset: v.$focus-outline-offset;
+  }
+}
+
+@media (min-width: v.$breakpoint-s) {
+  .nav-button {
+    padding: v.$xs v.$l;
+  }
+}

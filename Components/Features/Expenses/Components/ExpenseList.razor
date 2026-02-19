@@ -1,0 +1,34 @@
+@if (Items.Count == 0)
+{
+    <EmptyState Title="No expenses yet" Message="Add one above to track spending together." />
+}
+else
+{
+    <ul class="expense-list">
+        @foreach (var item in Items)
+        {
+            <li class="expense-list__item @(item.IsSettled ? "is-settled" : string.Empty)">
+                <div>
+                    <strong>@item.Title</strong>
+                    <div class="expense-list__meta">
+                        <span>@item.Currency @item.Amount.ToString("N2")</span>
+                        @if (item.IsUrgent)
+                        {
+                            <span class="tag">Urgent</span>
+                        }
+                    </div>
+                </div>
+                <button type="button"
+                        aria-label="@(item.IsSettled ? $"Mark expense '{item.Title}' as unsettled" : $"Mark expense '{item.Title}' as settled")"
+                        @onclick="() => OnToggleSettled.InvokeAsync(item.Id)">
+                    @(item.IsSettled ? "Unsettle" : "Settle")
+                </button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public IReadOnlyList<ExpenseVm> Items { get; set; } = [];
+    [Parameter] public EventCallback<Guid> OnToggleSettled { get; set; }
+}

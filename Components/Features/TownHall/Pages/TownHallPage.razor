@@ -1,0 +1,40 @@
+@implements IDisposable
+@inject TownHallState State
+
+<section class="feature-page">
+    <header>
+        <h1>Town Hall</h1>
+        <p>Recent activity from your household appears here in time order.</p>
+    </header>
+
+    @if (State.IsLoading)
+    {
+        <p class="status-message status-message--loading" role="status" aria-live="polite">Loading activity...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(State.Error))
+    {
+        <p class="status-message status-message--error" role="alert">@State.Error</p>
+    }
+    else
+    {
+        <TownHallFeed Items="State.Items" />
+    }
+</section>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        State.Changed += HandleStateChanged;
+        await State.RefreshAsync();
+    }
+
+    private void HandleStateChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        State.Changed -= HandleStateChanged;
+    }
+}

@@ -1,0 +1,77 @@
+@use "variables" as v;
+
+:host {
+  display: block;
+  min-height: 100dvh;
+}
+
+.page-layout {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: v.$s v.$m v.$xxl;
+  isolation: isolate;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    border-radius: 999px;
+    filter: blur(2px);
+    z-index: -1;
+  }
+
+  &::before {
+    width: 13rem;
+    height: 13rem;
+    top: -5rem;
+    right: -4rem;
+    background: rgb(105 160 172 / 28%);
+  }
+
+  &::after {
+    width: 14rem;
+    height: 14rem;
+    left: -7rem;
+    bottom: 12%;
+    background: rgb(106 196 111 / 20%);
+  }
+
+  &__content {
+    width: min(72rem, 100%);
+    margin: v.$l auto 0;
+    padding: v.$m;
+    border: 1px solid rgba(v.$text-color, 0.14);
+    border-radius: 1.25rem;
+    background: linear-gradient(175deg, rgb(10 13 18 / 56%) 0%, rgb(18 24 31 / 72%) 100%);
+    box-shadow: 0 1.5rem 2.8rem rgb(0 0 0 / 24%);
+    backdrop-filter: blur(14px);
+
+    &:focus-visible {
+      outline: v.$focus-outline-width solid v.$focus-ring-success-strong;
+      outline-offset: 3px;
+    }
+  }
+}
+
+@media (min-width: v.$breakpoint-s) {
+  .page-layout {
+    padding: v.$m v.$xl v.$xxl;
+
+    &__content {
+      margin-top: v.$xl;
+      padding: v.$l;
+    }
+  }
+}
+
+@media (min-width: v.$breakpoint-l) {
+  .page-layout {
+    &__content {
+      border-radius: 1.5rem;
+      padding: v.$xl;
+    }
+  }
+}

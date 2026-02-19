@@ -1,0 +1,200 @@
+@implements IDisposable
+@inject HouseholdState HouseholdState
+
+<section class="dashboard">
+    <header class="dashboard__header">
+        <h1>@(HouseholdState.HasHousehold ? "Dashboard" : "Welcome")</h1>
+        @if (!HouseholdState.HasHousehold && string.IsNullOrWhiteSpace(HouseholdState.Error))
+        {
+            <p>Join an existing household through invites, or create your own to get started.</p>
+        }
+    </header>
+
+    @if (HouseholdState.IsLoading)
+    {
+        <p class="status-message status-message--loading" role="status" aria-live="polite">Loading household...</p>
+    }
+    else if (!string.IsNullOrWhiteSpace(HouseholdState.Error))
+    {
+        <p class="status-message status-message--error" role="alert">@HouseholdState.Error</p>
+    }
+    else if (!HouseholdState.HasHousehold)
+    {
+        <section class="dashboard-setup" aria-label="Household setup">
+            <div class="dashboard-setup__tabs" role="tablist" aria-label="Setup tabs">
+                <button type="button"
+                        class="dashboard-setup__tab @(IsTabActive(SetupTab.Invites) ? "dashboard-setup__tab--active" : null)"
+                        role="tab"
+                        aria-selected="@(IsTabActive(SetupTab.Invites))"
+                        @onclick="() => SetActiveTab(SetupTab.Invites)">
+                    Invites
+                </button>
+                <button type="button"
+                        class="dashboard-setup__tab @(IsTabActive(SetupTab.CreateHousehold) ? "dashboard-setup__tab--active" : null)"
+                        role="tab"
+                        aria-selected="@(IsTabActive(SetupTab.CreateHousehold))"
+                        @onclick="() => SetActiveTab(SetupTab.CreateHousehold)">
+                    Create Household
+                </button>
+            </div>
+
+            <section class="dashboard-setup__panel" role="tabpanel">
+                @if (IsTabActive(SetupTab.Invites))
+                {
+                    <h2>Invites</h2>
+                    <p>Ask a household admin to invite your username. Accept an invite to join.</p>
+
+                    @if (HouseholdState.PendingInvites.Count == 0)
+                    {
+                        <p>No pending invites yet.</p>
+                    }
+                    else
+                    {
+                        <ul class="dashboard-setup__invite-list">
+                            @foreach (var invite in HouseholdState.PendingInvites)
+                            {
+                                <li class="dashboard-setup__invite-item">
+                                    <div class="dashboard-setup__invite-meta">
+                                        <span>@invite.HouseholdName</span>
+                                        <span class="dashboard-setup__pending-badge">Pending</span>
+                                    </div>
+                                    <button type="button"
+                                            class="dashboard-setup__action dashboard-setup__action--small"
+                                            disabled="@(_isAcceptingInvite)"
+                                            @onclick="() => AcceptInviteAsync(invite.Id)">
+                                        Accept
+                                    </button>
+                                </li>
+                            }
+                        </ul>
+                    }
+
+                    <button type="button"
+                            class="dashboard-setup__action dashboard-setup__action--secondary"
+                            @onclick="RefreshSetupAsync">
+                        Refresh Invites
+                    </button>
+                }
+                else
+                {
+                    <h2>Create household</h2>
+                    <p>Start your own household now and invite others later.</p>
+
+                    <EditForm Model="_createHouseholdRequest"
+                              OnValidSubmit="HandleCreateHouseholdAsync"
+                              FormName="@_createHouseholdFormName"
+                              class="dashboard-setup__form">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <label for="@_householdNameInputId">Household name</label>
+                        <InputText id="@_householdNameInputId"
+                                   class="dashboard-setup__input"
+                                   maxlength="80"
+                                   @bind-Value="_createHouseholdRequest.Name" />
+
+                        <button type="submit" class="dashboard-setup__action">Create Household</button>
+                    </EditForm>
+                }
+            </section>
+        </section>
+    }
+    else
+    {
+        <nav class="dashboard__grid" aria-label="Dashboard navigation">
+            <DashboardButton Text="Chores"
+                             Href="@AppRoutes.Chores"
+                             SvgPath="/svgs/Chores.svg"
+                             Gradient="linear-gradient(145deg, #355a63 0%, #3f7882 50%, #69a0ac 100%)" />
+            <DashboardButton Text="Expenses"
+                             Href="@AppRoutes.Expenses"
+                             SvgPath="/svgs/Expenses.svg"
+                             Gradient="linear-gradient(145deg, #1f5f2f 0%, #2f8c43 50%, #6ac46f 100%)" />
+            <DashboardButton Text="Town Hall"
+                             Href="@AppRoutes.TownHall"
+                             SvgPath="/svgs/TownHall.svg"
+                             Gradient="linear-gradient(145deg, #6d3f1f 0%, #8a5129 50%, #b9763b 100%)" />
+            <DashboardButton Text="House Settings"
+                             Href="@AppRoutes.HouseholdSettings"
+                             SvgPath="/svgs/Settings.svg"
+                             Gradient="linear-gradient(145deg, #d9dde0 0%, #c6ccd1 50%, #eef1f4 100%)" />
+        </nav>
+    }
+</section>
+
+@code {
+    private readonly CreateHouseholdRequest _createHouseholdRequest = new();
+    private readonly string _createHouseholdFormName = $"create-household-{Guid.NewGuid():N}";
+    private readonly string _householdNameInputId = $"household-name-{Guid.NewGuid():N}";
+    private bool _isAcceptingInvite;
+    private SetupTab _activeTab = SetupTab.Invites;
+
+    private enum SetupTab
+    {
+        Invites,
+        CreateHousehold
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        HouseholdState.Changed += HandleStateChanged;
+
+        if (!HouseholdState.IsLoading)
+        {
+            await HouseholdState.LoadAsync();
+        }
+    }
+
+    private bool IsTabActive(SetupTab tab)
+    {
+        return _activeTab == tab;
+    }
+
+    private void SetActiveTab(SetupTab tab)
+    {
+        _activeTab = tab;
+    }
+
+    private async Task RefreshSetupAsync()
+    {
+        await HouseholdState.LoadAsync();
+    }
+
+    private async Task AcceptInviteAsync(Guid inviteId)
+    {
+        if (_isAcceptingInvite)
+        {
+            return;
+        }
+
+        _isAcceptingInvite = true;
+        try
+        {
+            await HouseholdState.AcceptInviteAsync(inviteId);
+        }
+        finally
+        {
+            _isAcceptingInvite = false;
+        }
+    }
+
+    private async Task HandleCreateHouseholdAsync()
+    {
+        await HouseholdState.CreateHouseholdAsync(_createHouseholdRequest);
+        if (HouseholdState.HasHousehold)
+        {
+            _activeTab = SetupTab.Invites;
+            _createHouseholdRequest.Name = string.Empty;
+        }
+    }
+
+    private void HandleStateChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        HouseholdState.Changed -= HandleStateChanged;
+    }
+}

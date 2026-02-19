@@ -1,0 +1,30 @@
+@use "variables" as v;
+
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+
+  &__item {
+    display: grid;
+    gap: 0.4rem;
+    border: 1px solid v.$border-panel;
+    border-radius: 0.95rem;
+    padding: 0.9rem 0.95rem;
+    background: v.$surface-panel;
+    box-shadow: v.$shadow-panel-inset;
+
+    p {
+      margin: 0;
+      color: v.$text-color;
+    }
+
+    time {
+      display: block;
+      color: v.$text-muted;
+      font-size: 0.82rem;
+    }
+  }
+}

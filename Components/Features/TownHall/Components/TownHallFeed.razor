@@ -1,0 +1,20 @@
+@if (Items.Count == 0)
+{
+    <EmptyState Title="No recent activity" Message="Changes in your household will appear here." />
+}
+else
+{
+    <ol class="feed">
+        @foreach (var item in Items)
+        {
+            <li class="feed__item">
+                <p>@item.Message</p>
+                <time datetime="@item.OccurredAt.ToString("O")">@item.OccurredAt.LocalDateTime.ToString("MMM d, h:mm tt")</time>
+            </li>
+        }
+    </ol>
+}
+
+@code {
+    [Parameter] public IReadOnlyList<HouseholdActivityVm> Items { get; set; } = [];
+}

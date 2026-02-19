@@ -1,0 +1,15 @@
+<a class="dashboard-button" href="@Href" style="@TileStyle">
+    <span class="dashboard-button__media" aria-hidden="true">
+        <img src="@SvgPath" alt="" loading="lazy" />
+    </span>
+    <h2>@Text</h2>
+</a>
+
+@code {
+    [Parameter, EditorRequired] public string Text { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Href { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string SvgPath { get; set; } = string.Empty;
+    [Parameter] public string Gradient { get; set; } = "linear-gradient(145deg, #355a63 0%, #3f7882 50%, #69a0ac 100%)";
+
+    private string TileStyle => $"--dashboard-button-gradient: {Gradient};";
+}

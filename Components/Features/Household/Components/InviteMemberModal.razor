@@ -1,0 +1,24 @@
+<EditForm Model="_request" OnValidSubmit="SubmitAsync" FormName="@_formName" class="invite-form">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="invite-form__row">
+        <label class="visually-hidden" for="@_usernameInputId">Username</label>
+        <InputText id="@_usernameInputId" class="invite-form__input" @bind-Value="_request.Username" placeholder="Invite by username" />
+        <button class="invite-form__submit" type="submit">Invite</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter] public EventCallback<InviteMemberRequest> OnInvite { get; set; }
+
+    private readonly string _formName = $"invite-member-{Guid.NewGuid():N}";
+    private readonly string _usernameInputId = $"invite-username-{Guid.NewGuid():N}";
+    private InviteMemberRequest _request = new();
+
+    private async Task SubmitAsync()
+    {
+        await OnInvite.InvokeAsync(_request);
+        _request = new InviteMemberRequest();
+    }
+}

@@ -1,0 +1,304 @@
+@use "variables" as v;
+
+.quick-add {
+  position: fixed;
+  right: v.$m;
+  bottom: v.$m;
+  z-index: 60;
+  display: grid;
+  gap: 0.45em;
+
+  &__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 1px solid rgba(v.$text-color, 0.25);
+    padding: 0.45em 1.1em;
+    font-size: 0.84rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: v.$text-color;
+    background: v.$artisan-green;
+    box-shadow: 0 0.8rem 1.7rem rgb(0 0 0 / 25%);
+    transition:
+      transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+
+    &:nth-child(2) {
+      background: v.$artisan-rust;
+    }
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 1rem 2rem rgb(0 0 0 / 32%);
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow:
+        0 0 0 0.16rem rgba(v.$text-color, 0.26),
+        0 1rem 2rem rgb(0 0 0 / 32%);
+    }
+
+    &--active {
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 1.2rem 2.4rem rgb(0 0 0 / 38%);
+      filter: saturate(1.1);
+    }
+  }
+}
+
+.quick-add-modal-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: end;
+  padding: v.$m;
+  background: rgb(6 10 15 / 0%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s ease, background 0.24s ease;
+
+  &--open {
+    background: v.$surface-overlay;
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.quick-add-modal {
+  width: min(36rem, 100%);
+  max-height: min(85dvh, 40rem);
+  overflow: auto;
+  border-radius: 1.2rem;
+  border: 1px solid v.$border-white-soft;
+  padding: 1rem;
+  background: linear-gradient(165deg, rgb(16 21 28 / 94%) 0%, rgb(9 14 20 / 96%) 100%);
+  box-shadow: 0 1.6rem 2.8rem rgb(0 0 0 / 45%);
+  opacity: 0;
+  transform: translate3d(0, 0.85rem, 0) scale(0.96);
+  transform-origin: calc(100% - 2.25rem) calc(100% - 2.25rem);
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease-out;
+  will-change: transform, opacity;
+
+  &--open {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  &--chore {
+    border-color: rgb(122 212 140 / 42%);
+  }
+
+  &--expense {
+    border-color: rgb(244 161 103 / 42%);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: v.$m;
+    margin-bottom: v.$m;
+
+    h2 {
+      margin: 0;
+      color: v.$text-color;
+      font-size: 1.35rem;
+    }
+
+    p {
+      margin: 0.25rem 0 0;
+      color: rgba(v.$text-color, 0.75);
+      font-size: 0.95rem;
+    }
+  }
+
+  &__close {
+    border: 1px solid v.$border-white-strong;
+    border-radius: 999px;
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    color: v.$text-color;
+    background: v.$surface-white;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+      background: v.$surface-white-strong;
+    }
+
+    &:focus-visible {
+      outline: v.$focus-outline-width solid rgba(v.$focus-ring-success, 0.9);
+      outline-offset: v.$focus-outline-offset;
+    }
+  }
+
+  &__status,
+  &__error {
+    margin: 0.85rem 0 0;
+    border-radius: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.88rem;
+  }
+
+  &__status {
+    border: 1px solid v.$border-status-loading;
+    color: rgba(v.$text-color, 0.86);
+    background: v.$surface-status-loading;
+  }
+
+  &__error {
+    border: 1px solid v.$border-error-soft;
+    color: v.$state-danger-text-soft;
+    background: v.$state-danger-bg-strong;
+  }
+
+  &__body {
+    display: grid;
+    gap: 0.8rem;
+
+    ::deep(.composer) {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.8rem;
+      border: 0;
+      border-radius: 0;
+      padding: 0;
+      background: transparent;
+    }
+
+    ::deep(.validation-summary-errors) {
+      margin: 0;
+      border-radius: 0.75rem;
+      padding: 0.55rem 0.75rem;
+      border: 1px solid v.$border-error-soft;
+      color: v.$state-danger-text-soft;
+      background: v.$state-danger-bg-strong;
+    }
+
+    ::deep(.composer__row) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      width: 100%;
+      gap: 0.7rem;
+    }
+
+    ::deep(.composer__input),
+    ::deep(input[type="date"]),
+    ::deep(input[type="text"]),
+    ::deep(input[type="number"]) {
+      border: 1px solid rgba(v.$text-color, 0.23);
+      border-radius: 0.72rem;
+      padding: 0.55rem 0.7rem;
+      width: 100%;
+      max-width: 100%;
+      color: v.$text-color;
+      background: rgb(10 15 22 / 74%);
+    }
+
+    ::deep(.composer__amount),
+    ::deep(.composer__currency) {
+      width: 100%;
+    }
+
+    ::deep(.composer__input:focus-visible),
+    ::deep(input:focus-visible) {
+      outline: 2px solid rgba(v.$focus-ring-success, 0.95);
+      outline-offset: 1px;
+    }
+
+    ::deep(label) {
+      color: rgba(v.$text-color, 0.88);
+      font-weight: 500;
+    }
+
+    ::deep(.composer__field) {
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    ::deep(.composer__choice) {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    ::deep(input[type="checkbox"]) {
+      width: 1rem;
+      height: 1rem;
+      accent-color: #76ca89;
+    }
+
+    ::deep(.composer__submit) {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      border: 0;
+      border-radius: 0.72rem;
+      padding: 0.55rem 0.9rem;
+      color: v.$text-color;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      background: linear-gradient(145deg, #5e8f6a, #3f6d4a);
+      box-shadow: 0 0.7rem 1.3rem rgb(0 0 0 / 24%);
+      transition: filter 0.2s ease, transform 0.2s ease;
+
+      &:hover {
+        transform: translateY(-1px);
+        filter: brightness(1.08);
+      }
+    }
+  }
+
+  &--expense &__body {
+    ::deep(input[type="checkbox"]) {
+      accent-color: #f09a61;
+    }
+
+    ::deep(.composer__submit) {
+      background: linear-gradient(145deg, #b36842, #8f4f2e);
+    }
+  }
+}
+
+@media (max-width: 575.98px) {
+  .quick-add-modal {
+    width: 100%;
+  }
+}
+
+@media (min-width: v.$breakpoint-s) {
+  .quick-add {
+    right: v.$l;
+    bottom: v.$l;
+    grid-auto-flow: column;
+
+    &__button {
+      padding: v.$s v.$l;
+    }
+  }
+
+  .quick-add-modal-shell {
+    padding: v.$l;
+  }
+
+  .quick-add-modal {
+    padding: 1.25rem;
+  }
+}
+
+@media (min-width: v.$breakpoint-l) {
+  .quick-add {
+    right: v.$xl;
+    bottom: v.$xl;
+  }
+}

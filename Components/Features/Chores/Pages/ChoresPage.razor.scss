@@ -1,0 +1,30 @@
+@use "variables" as v;
+
+.feature-page {
+  display: grid;
+  gap: 1.25rem;
+  width: min(52rem, 100%);
+
+  > header {
+    display: grid;
+    gap: 0.35rem;
+
+    h1 {
+      margin: 0;
+      color: v.$text-color;
+      line-height: 1.1;
+      font-size: clamp(1.9rem, 3.2vw, 2.4rem);
+      text-shadow: 0 0.35rem 1rem rgb(0 0 0 / 24%);
+    }
+  }
+
+  > p {
+    margin: 0;
+    border: 1px solid v.$border-panel;
+    border-radius: 0.75rem;
+    padding: 0.7rem 0.85rem;
+    background: v.$surface-status;
+    color: v.$text-muted;
+  }
+}
+

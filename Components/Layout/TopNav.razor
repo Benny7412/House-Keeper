@@ -1,0 +1,126 @@
+@implements IDisposable
+@using HouseKeeper.Components.Features.Household.State
+@inject HouseholdState HouseholdState
+@inject AuthenticationStateProvider AuthStateProvider
+@inject ILogger<TopNav> Logger
+
+<header class="top-nav">
+    <AuthorizeView>
+        <Authorized>
+            <nav class="top-nav__inner @(_isMobileMenuOpen ? "top-nav__inner--open" : null)" aria-label="Primary">
+                <button type="button"
+                        class="top-nav__menu-toggle"
+                        aria-expanded="@_isMobileMenuOpen"
+                        aria-controls="top-nav-menu"
+                        @onclick="ToggleMobileMenu">
+                    <span class="top-nav__menu-icon" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                    Menu
+                </button>
+                <div id="top-nav-menu" class="top-nav__menu">
+                    <NavButton Text="Home" Href="@AppRoutes.Home" OnClick="CloseMobileMenu" />
+                    @if (HouseholdState.HasHousehold)
+                    {
+                        <NavButton Text="Chores" Href="@AppRoutes.Chores" OnClick="CloseMobileMenu" />
+                        <NavButton Text="Expenses" Href="@AppRoutes.Expenses" OnClick="CloseMobileMenu" />
+                        <NavButton Text="Town Hall" Href="@AppRoutes.TownHall" OnClick="CloseMobileMenu" />
+                        <NavButton Text="House Settings" Href="@AppRoutes.HouseholdSettings" OnClick="CloseMobileMenu" />
+                    }
+                    <form method="post" action="@AppRoutes.Logout" class="top-nav__action-form">
+                        <AntiforgeryToken />
+                        <input type="hidden" name="returnUrl" value="@AppRoutes.Login" />
+                        <button type="submit" class="top-nav__action" @onclick="CloseMobileMenu">Log out</button>
+                    </form>
+                </div>
+            </nav>
+        </Authorized>
+        <NotAuthorized>
+            <nav class="top-nav__inner @(_isMobileMenuOpen ? "top-nav__inner--open" : null)" aria-label="Primary">
+                <button type="button"
+                        class="top-nav__menu-toggle"
+                        aria-expanded="@_isMobileMenuOpen"
+                        aria-controls="top-nav-menu"
+                        @onclick="ToggleMobileMenu">
+                    <span class="top-nav__menu-icon" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                    Menu
+                </button>
+                <div id="top-nav-menu" class="top-nav__menu">
+                    <NavButton Text="Log in" Href="@AppRoutes.Login" OnClick="CloseMobileMenu" />
+                    <NavButton Text="Register" Href="@AppRoutes.Register" OnClick="CloseMobileMenu" />
+                </div>
+            </nav>
+        </NotAuthorized>
+    </AuthorizeView>
+</header>
+
+@code {
+    private bool _isMobileMenuOpen;
+
+    protected override async Task OnInitializedAsync()
+    {
+        HouseholdState.Changed += HandleStateChanged;
+        AuthStateProvider.AuthenticationStateChanged += HandleAuthenticationStateChanged;
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        if (authState.User.Identity?.IsAuthenticated == true)
+        {
+            await HouseholdState.LoadAsync();
+        }
+        else
+        {
+            HouseholdState.Clear();
+        }
+    }
+
+    private async void HandleAuthenticationStateChanged(Task<AuthenticationState> authStateTask)
+    {
+        try
+        {
+            var authState = await authStateTask;
+            if (authState.User.Identity?.IsAuthenticated == true)
+            {
+                await HouseholdState.LoadAsync();
+            }
+            else
+            {
+                HouseholdState.Clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogWarning(ex, "Failed to refresh household state after authentication change.");
+            HouseholdState.Clear();
+        }
+
+        _isMobileMenuOpen = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void HandleStateChanged()
+    {
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleMobileMenu()
+    {
+        _isMobileMenuOpen = !_isMobileMenuOpen;
+    }
+
+    private void CloseMobileMenu()
+    {
+        _isMobileMenuOpen = false;
+    }
+
+    public void Dispose()
+    {
+        HouseholdState.Changed -= HandleStateChanged;
+        AuthStateProvider.AuthenticationStateChanged -= HandleAuthenticationStateChanged;
+    }
+}

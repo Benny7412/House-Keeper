@@ -1,0 +1,37 @@
+@if (Items.Count == 0)
+{
+    <EmptyState Title="No chores yet" Message="Add one above to start your household feed." />
+}
+else
+{
+    <ul class="chore-list">
+        @foreach (var item in Items)
+        {
+            <li class="chore-list__item @(item.IsCompleted ? "is-done" : string.Empty)">
+                <div>
+                    <strong>@item.Title</strong>
+                    <div class="chore-list__meta">
+                        @if (item.IsUrgent)
+                        {
+                            <span class="tag">Urgent</span>
+                        }
+                        @if (item.DueAt is not null)
+                        {
+                            <span>Due @item.DueAt.Value.LocalDateTime.ToString("MMM d, h:mm tt")</span>
+                        }
+                    </div>
+                </div>
+                <button type="button"
+                        aria-label="@(item.IsCompleted ? $"Mark chore '{item.Title}' as not completed" : $"Mark chore '{item.Title}' as completed")"
+                        @onclick="() => OnToggleComplete.InvokeAsync(item.Id)">
+                    @(item.IsCompleted ? "Undo" : "Complete")
+                </button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public IReadOnlyList<ChoreVm> Items { get; set; } = [];
+    [Parameter] public EventCallback<Guid> OnToggleComplete { get; set; }
+}

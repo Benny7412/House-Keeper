@@ -1,0 +1,9 @@
+<NavLink href="@Href" class="nav-button" Match="NavLinkMatch.Prefix" @onclick="OnClick">
+    @Text
+</NavLink>
+
+@code {
+    [Parameter, EditorRequired] public string Text { get; set; } = string.Empty;
+    [Parameter, EditorRequired] public string Href { get; set; } = string.Empty;
+    [Parameter] public EventCallback OnClick { get; set; }
+}

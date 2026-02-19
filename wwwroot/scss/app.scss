@@ -1,0 +1,89 @@
+@use "./variables" as v;
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  height: 100%;
+}
+
+h1 {
+  font-family: v.$header-big-font;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: v.$header-small-font;
+}
+
+body {
+  color: v.$text-color;
+  background-color: v.$foreground;
+  font-family: v.$body-font;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  background-color: v.$background;
+}
+
+a {
+  color: v.$text-color;
+  text-decoration: none;
+}
+
+.skip-link {
+  position: absolute;
+  top: -10rem;
+  left: 1rem;
+  z-index: 200;
+  border: 1px solid rgba(v.$text-color, 0.55);
+  border-radius: 0.7rem;
+  padding: 0.5rem 0.8rem;
+  color: v.$text-color;
+  background: rgb(15 25 35 / 96%);
+  transition: top 0.2s ease;
+
+  &:focus-visible {
+    top: 1rem;
+    outline: v.$focus-outline-width solid v.$focus-ring-success-strong;
+    outline-offset: v.$focus-outline-offset;
+  }
+}
+
+.status-message {
+  margin: 0;
+  border: 1px solid v.$border-panel-soft;
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  color: v.$text-muted;
+  background: v.$surface-status;
+
+  &--loading {
+    border-color: v.$border-status-loading;
+    color: rgba(v.$text-color, 0.88);
+    background: v.$surface-status-loading;
+  }
+
+  &--error {
+    border-color: v.$border-error;
+    color: v.$state-danger-text;
+    background: v.$surface-status-error;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}
