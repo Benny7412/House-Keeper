@@ -48,6 +48,38 @@ npm run sass:build
 dotnet run
 ```
 
+## Deploy to Render
+
+This repo includes a `Dockerfile` and `render.yaml` for a Render Web Service deploy.
+
+### 1. Push this repo to GitHub
+
+Render will build from your GitHub repository.
+
+### 2. Create the service in Render
+
+In Render, choose **New +** -> **Blueprint** and select this repository.
+
+Render will detect `render.yaml` and create the `housekeeper` web service.
+
+### 3. Set required environment variables in Render
+
+In the Render service dashboard, add:
+
+- `MONGODB_CONNECTION_STRING` (required)
+
+`ASPNETCORE_ENVIRONMENT=Production` and `MONGODB_DATABASE_NAME=housekeeper` are already set in `render.yaml` (you can override `MONGODB_DATABASE_NAME` if needed).
+
+### 4. Deploy
+
+Trigger a deploy from Render (or push to your default branch if auto deploy is enabled).
+
+The container starts with:
+
+- `ASPNETCORE_URLS=http://0.0.0.0:$PORT`
+
+so it binds to Render's required port automatically.
+
 ## Architecture Notes
 
 - `Components/Features/*` holds vertical slices (pages, state, service, contracts, components).
